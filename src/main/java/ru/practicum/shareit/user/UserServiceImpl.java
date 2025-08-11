@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -19,7 +20,7 @@ public class UserServiceImpl implements UserService {
     public UserDto create(UserDto dto) {
         validateEmail(dto.getEmail());
         if (repo.existsByEmail(dto.getEmail(), null)) {
-            throw new ValidationException("Email already in use: " + dto.getEmail());
+            throw new ConflictException("Email already in use: " + dto.getEmail());
         }
         User user = UserMapper.toUser(dto);
         user.setId(null);
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
         if (dto.getEmail() != null) {
             validateEmail(dto.getEmail());
             if (repo.existsByEmail(dto.getEmail(), userId)) {
-                throw new ValidationException("Email already in use: " + dto.getEmail());
+                throw new ConflictException("Email already in use: " + dto.getEmail());
             }
             user.setEmail(dto.getEmail());
         }
