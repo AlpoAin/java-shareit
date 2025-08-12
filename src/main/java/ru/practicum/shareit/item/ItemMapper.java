@@ -1,29 +1,20 @@
 package ru.practicum.shareit.item;
 
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Builder;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
-public class ItemMapper {
-    public static ItemDto toItemDto(Item item) {
-        if (item == null) return null;
-        return ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .requestId(item.getRequestId())
-                .build();
-    }
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
+public interface ItemMapper {
 
-    public static Item toItem(ItemDto dto, Long ownerId) {
-        if (dto == null) return null;
-        return Item.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .available(dto.getAvailable())
-                .ownerId(ownerId)
-                .requestId(dto.getRequestId())
-                .build();
+    ItemDto toItemDto(Item item);
+    Item toItem(ItemDto dto, Long ownerId);
+
+    @AfterMapping
+    default void setOwner(@MappingTarget Item item, Long ownerId) {
+        item.setOwnerId(ownerId);
     }
 }

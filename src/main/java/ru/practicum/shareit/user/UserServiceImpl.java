@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -15,16 +14,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository repo;
+    private final UserMapper mapper;
 
     @Override
     public UserDto create(UserDto dto) {
         validateEmail(dto.getEmail());
         if (repo.existsByEmail(dto.getEmail(), null)) {
-            throw new ConflictException("Email already in use: " + dto.getEmail());
+            throw new ValidationException("Email already in use: " + dto.getEmail());
         }
-        User user = UserMapper.toUser(dto);
+        User user = mapper.toUser(dto);
         user.setId(null);
-        return UserMapper.toUserDto(repo.add(user));
+        return mapper.toUserDto(repo.add(user));
     }
 
     @Override
@@ -35,22 +35,22 @@ public class UserServiceImpl implements UserService {
         if (dto.getEmail() != null) {
             validateEmail(dto.getEmail());
             if (repo.existsByEmail(dto.getEmail(), userId)) {
-                throw new ConflictException("Email already in use: " + dto.getEmail());
+                throw new ValidationException("Email already in use: " + dto.getEmail());
             }
             user.setEmail(dto.getEmail());
         }
-        return UserMapper.toUserDto(repo.update(user));
+        return mapper.toUserDto(repo.update(user));
     }
 
     @Override
     public UserDto get(Long userId) {
-        return UserMapper.toUserDto(repo.findById(userId)
+        return mapper.toUserDto(repo.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found: " + userId)));
     }
 
     @Override
     public List<UserDto> getAll() {
-        return repo.findAll().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return repo.findAll().stream().map(mapper::toUserDto).collect(Collectors.toList());
     }
 
     @Override

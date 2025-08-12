@@ -16,15 +16,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository repo;
-    private final UserService userService; // валидация существования владельца
+    private final UserService userService;
+    private final ItemMapper mapper;
 
     @Override
     public ItemDto create(Long ownerId, ItemDto dto) {
         validateForCreate(dto);
-        // проверим, что владелец существует
         userService.get(ownerId);
-        Item saved = repo.add(ItemMapper.toItem(dto, ownerId));
-        return ItemMapper.toItemDto(saved);
+        Item saved = repo.add(mapper.toItem(dto, ownerId));
+        return mapper.toItemDto(saved);
     }
 
     @Override
@@ -37,19 +37,19 @@ public class ItemServiceImpl implements ItemService {
         if (dto.getName() != null) item.setName(dto.getName());
         if (dto.getDescription() != null) item.setDescription(dto.getDescription());
         if (dto.getAvailable() != null) item.setAvailable(dto.getAvailable());
-        return ItemMapper.toItemDto(repo.update(item));
+        return mapper.toItemDto(repo.update(item));
     }
 
     @Override
     public ItemDto get(Long itemId) {
-        return ItemMapper.toItemDto(repo.findById(itemId)
+        return mapper.toItemDto(repo.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item not found: " + itemId)));
     }
 
     @Override
     public List<ItemDto> getByOwner(Long ownerId) {
         return repo.findByOwner(ownerId).stream()
-                .map(ItemMapper::toItemDto)
+                .map(mapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> search(String text) {
         if (text == null || text.isBlank()) return List.of();
         return repo.searchAvailable(text).stream()
-                .map(ItemMapper::toItemDto)
+                .map(mapper::toItemDto)
                 .collect(Collectors.toList());
     }
 

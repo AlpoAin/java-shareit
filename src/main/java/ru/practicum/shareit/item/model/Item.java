@@ -1,10 +1,6 @@
 package ru.practicum.shareit.item.model;
-
 import lombok.*;
 
-/**
- * Модель вещи (in-memory, без JPA)
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
