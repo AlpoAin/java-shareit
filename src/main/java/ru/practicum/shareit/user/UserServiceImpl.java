@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     private void validateEmail(String email) {
         if (email == null || email.isBlank() || !email.contains("@")) {
-            throw new ConflictException("Invalid email");
+            throw new ValidationException("Invalid email");
         }
     }
 }
