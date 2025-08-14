@@ -1,15 +1,12 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
-/**
- * Модель пользователя (in-memory, без JPA)
- */
 import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class UserDto {
     private Long id;
     private String name;
     private String email;
