@@ -31,7 +31,7 @@ public class JpaItemRepository implements ItemRepository {
 
     @Override
     public List<Item> findByOwner(Long ownerId) {
-        return jpa.findByOwnerIdOrderByIdAsc(ownerId);
+        return jpa.findByOwnerId(ownerId);
     }
 
     @Override
