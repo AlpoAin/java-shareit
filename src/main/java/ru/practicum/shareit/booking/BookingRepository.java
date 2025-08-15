@@ -10,8 +10,9 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByBooker_IdOrderByStartDesc(Long bookerId);
 
-    @Query("select b from Booking b where b.item.ownerId = ?1 order by b.start desc")
-    List<Booking> findByOwnerIdOrderByStartDesc(Long ownerId);
+    @Query("select b from Booking b where b.item.ownerId = :ownerId order by b.start desc")
+    List<Booking> findByOwnerIdOrderByStartDesc(@org.springframework.data.repository.query.Param("ownerId") Long ownerId);
+
 
     boolean existsByItem_IdAndBooker_IdAndStatusAndEndBefore(Long itemId, Long bookerId,
                                                              BookingStatus status, LocalDateTime time);

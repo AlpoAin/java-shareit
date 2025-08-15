@@ -46,7 +46,7 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Owner cannot book own item");
         }
 
-        Booking b = Booking.builder()
+        Booking booking = Booking.builder()
                 .start(dto.getStart())
                 .end(dto.getEnd())
                 .item(item)
@@ -54,33 +54,33 @@ public class BookingServiceImpl implements BookingService {
                 .status(BookingStatus.WAITING)
                 .build();
 
-        return mapper.toDto(bookingRepo.save(b));
+        return mapper.toDto(bookingRepo.save(booking));
     }
 
     @Override
     @Transactional
     public BookingDto approve(Long ownerId, Long bookingId, boolean approved) {
-        Booking b = bookingRepo.findById(bookingId)
+        Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking not found: " + bookingId));
-        if (!b.getItem().getOwnerId().equals(ownerId)) {
+        if (!booking.getItem().getOwnerId().equals(ownerId)) {
             throw new ForbiddenException("Only owner can approve/decline booking");
         }
-        if (b.getStatus() != BookingStatus.WAITING) {
+        if (booking.getStatus() != BookingStatus.WAITING) {
             throw new ValidationException("Booking already processed");
         }
-        b.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        return mapper.toDto(bookingRepo.save(b));
+        booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
+        return mapper.toDto(bookingRepo.save(booking));
     }
 
     @Override
     public BookingDto get(Long userId, Long bookingId) {
-        Booking b = bookingRepo.findById(bookingId)
+        Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking not found: " + bookingId));
 
-        if (!b.getBooker().getId().equals(userId) && !b.getItem().getOwnerId().equals(userId)) {
+        if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwnerId().equals(userId)) {
             throw new NotFoundException("Booking is not accessible for user " + userId);
         }
-        return mapper.toDto(b);
+        return mapper.toDto(booking);
     }
 
     @Override
