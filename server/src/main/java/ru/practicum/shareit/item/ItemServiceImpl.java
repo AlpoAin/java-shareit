@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.request.storage.CrudItemRequestJpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository repo;
     private final UserService userService;
     private final ItemMapper mapper;
+    private final CrudItemRequestJpaRepository itemRequestRepo;
 
     private final BookingRepository bookingRepo;
     private final CommentRepository commentRepo;
@@ -37,6 +39,12 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto create(Long ownerId, ItemDto dto) {
         validateForCreate(dto);
         userService.get(ownerId);
+        if (dto.getRequestId() != null) {
+            boolean exists = itemRequestRepo.existsById(dto.getRequestId());
+            if (!exists) {
+                throw new NotFoundException("Request not found: " + dto.getRequestId());
+            }
+        }
         Item saved = repo.add(mapper.toItem(dto, ownerId));
         return enrichWithDetails(mapper.toItemDto(saved), ownerId);
     }
