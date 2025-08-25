@@ -2,15 +2,13 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
 
 import static ru.practicum.shareit.common.HeaderNames.X_SHARER_USER_ID;
 
-/**
- * Спринт add-controllers: операции над вещами (in-memory)
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
@@ -31,8 +29,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@PathVariable Long itemId) {
-        return service.get(itemId);
+    public ItemDto get(@RequestHeader(X_SHARER_USER_ID) Long userId,
+                       @PathVariable Long itemId) {
+        return service.get(itemId, userId);
     }
 
     @GetMapping
@@ -43,5 +42,12 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam String text) {
         return service.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader(X_SHARER_USER_ID) Long userId,
+                                 @PathVariable Long itemId,
+                                 @RequestBody CommentDto dto) {
+        return service.addComment(itemId, userId, dto);
     }
 }
