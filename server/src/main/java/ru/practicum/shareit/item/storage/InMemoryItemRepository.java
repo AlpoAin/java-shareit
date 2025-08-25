@@ -49,4 +49,12 @@ public class InMemoryItemRepository implements ItemRepository {
                 .sorted(Comparator.comparing(Item::getId))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Item> findByRequestId(Long requestId) {
+        return items.values().stream()
+                .filter(i -> java.util.Objects.equals(i.getRequestId(), requestId))
+                .sorted(java.util.Comparator.comparing(ru.practicum.shareit.item.model.Item::getId))
+                .toList();
+    }
 }

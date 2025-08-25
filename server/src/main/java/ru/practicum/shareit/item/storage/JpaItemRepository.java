@@ -38,4 +38,9 @@ public class JpaItemRepository implements ItemRepository {
     public List<Item> searchAvailable(String text) {
         return jpa.searchAvailable(text);
     }
+
+    @Override
+    public List<Item> findByRequestId(Long requestId) {
+        return jpa.findByRequestId(requestId);
+    }
 }

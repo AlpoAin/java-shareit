@@ -19,4 +19,6 @@ public interface CrudItemJpaRepository extends JpaRepository<Item, Long> {
                 or upper(i.description) like upper(concat('%', ?1, '%')) )
            """)
     List<Item> searchAvailable(String text);
+
+    List<Item> findByRequestId(Long requestId);
 }
