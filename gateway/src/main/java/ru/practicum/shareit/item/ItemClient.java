@@ -21,4 +21,12 @@ public class ItemClient extends BaseClient {
     public ResponseEntity<Object> create(long userId, Object body) {
         return post("", userId, body);
     }
+
+    public ResponseEntity<Object> getById(long userId, long itemId) {
+        return get("/" + itemId, userId);
+    }
+
+    public ResponseEntity<Object> addComment(long userId, long itemId, Object body) {
+        return post("/" + itemId + "/comment", userId, body);
+    }
 }
