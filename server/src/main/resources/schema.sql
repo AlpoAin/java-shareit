@@ -56,14 +56,20 @@ CREATE INDEX IF NOT EXISTS idx_bookings_booker    ON bookings(booker_id);
 CREATE INDEX IF NOT EXISTS idx_comments_item      ON comments(item_id);
 
 -- === MIGRATIONS FOR SPRINT 3 (idempotent) ===
+
 ALTER TABLE IF EXISTS requests
   ADD COLUMN IF NOT EXISTS created TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW();
 
 UPDATE requests SET created = NOW() WHERE created IS NULL;
 
 ALTER TABLE IF EXISTS items
-  ADD CONSTRAINT IF NOT EXISTS fk_items_request
+  DROP CONSTRAINT IF EXISTS fk_items_request;
+
+ALTER TABLE IF EXISTS items
+  ADD CONSTRAINT fk_items_request
   FOREIGN KEY (request_id) REFERENCES requests (id);
 
+-- индексы
 CREATE INDEX IF NOT EXISTS idx_requests_created ON requests(created);
 CREATE INDEX IF NOT EXISTS idx_items_request   ON items(request_id);
+
