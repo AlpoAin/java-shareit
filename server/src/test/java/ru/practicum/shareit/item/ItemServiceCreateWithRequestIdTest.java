@@ -17,8 +17,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
-// было: INSERT INTO users(...)
-// стало: MERGE (upsert) — безопасно при повторных прогонках и общем контексте
 @Sql(statements = "MERGE INTO users KEY(id) VALUES (1,'owner','o@example.com');")
 class ItemServiceCreateWithRequestIdTest {
 
