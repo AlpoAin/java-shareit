@@ -11,7 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Sql(statements = "INSERT INTO users(id, name, email) VALUES (1,'test','test@example.com');")
+// тоже заменили на MERGE — чтобы не конфликтовать с соседним тест-классом
+@Sql(statements = "MERGE INTO users KEY(id) VALUES (1,'test','test@example.com');")
 class ItemRequestServiceImplTest {
 
     @Autowired ItemRequestService service;
