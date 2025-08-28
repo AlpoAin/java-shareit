@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.storage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface CrudItemJpaRepository extends JpaRepository<Item, Long> {
              and ( upper(i.name) like upper(concat('%', ?1, '%'))
                 or upper(i.description) like upper(concat('%', ?1, '%')) )
            """)
-    List<Item> searchAvailable(String text);
+    List<Item> searchAvailable(@Param("text") String text);
 
     List<Item> findByRequestId(Long requestId);
 }

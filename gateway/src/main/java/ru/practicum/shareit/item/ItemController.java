@@ -13,12 +13,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Validated
 public class ItemController {
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id"; // ← константа
+
     private final ItemClient client;
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") long ownerId,
-                                         @RequestBody java.util.Map<String, Object> body) {
-        // валидация: name/available обязательны, requestId — опционален
+    public ResponseEntity<Object> create(@RequestHeader(USER_ID_HEADER) long ownerId,
+                                         @RequestBody Map<String, Object> body) {
         if (body.get("name") == null || body.get("name").toString().isBlank()) {
             throw new IllegalArgumentException("name is required");
         }
@@ -29,13 +30,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Object> getById(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ResponseEntity<Object> getById(@RequestHeader(USER_ID_HEADER) long userId,
                                           @PathVariable long itemId) {
         return client.getById(userId, itemId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> addComment(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ResponseEntity<Object> addComment(@RequestHeader(USER_ID_HEADER) long userId,
                                              @PathVariable long itemId,
                                              @RequestBody Map<String, Object> body) {
         Object text = body.get("text");
